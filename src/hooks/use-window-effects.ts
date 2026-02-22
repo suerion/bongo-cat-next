@@ -1,36 +1,73 @@
 import { useEffect, useCallback, useRef } from "react";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { message } from "antd";
 import { useCatStore } from "@/stores/cat-store";
 
 /**
- * 🎯 窗口效果管理 Hook
+ * Hook for window effects.
  *
- * 职责：
- * - 监听窗口相关状态变化
- * - 调用 Tauri API 设置窗口属性
- * - 处理窗口穿透和始终置顶功能
- * - 防抖处理和错误恢复
+ * Responsibilities:
+ * - Observe window-related state changes
+ * - Call the Tauri API to apply window settings
+ * - Handle click-through and always-on-top behavior
+ * - Provide basic error handling
  */
 export function useWindowEffects() {
-  const { penetrable, alwaysOnTop, visible, opacity, scale } = useCatStore();
+  const { penetrable, alwaysOnTop, visible, opacity } = useCatStore();
 
-  // 防止重复调用的标志
+  // Cache the window handle to avoid repeated lookups
   const windowRef = useRef<ReturnType<typeof getCurrentWebviewWindow> | null>(null);
   const isInitializedRef = useRef(false);
 
-  // 获取窗口实例（缓存）
+// Get window instance (cached)
   const getWindow = useCallback(() => {
     windowRef.current ??= getCurrentWebviewWindow();
     return windowRef.current;
   }, []);
 
-  // 初始化窗口设置
+	const reapplyWindowFlags = useCallback(async () => {
+  try {
+    const window = getWindow();
+    await window.setIgnoreCursorEvents(penetrable);
+    await window.setAlwaysOnTop(alwaysOnTop);
+  } catch (error) {
+    message.error(`Failed to reapply window flags: ${String(error)}`);
+  }
+}, [getWindow, penetrable, alwaysOnTop]);
+
+	useEffect(() => {
+  let unlisten: null | (() => void) = null;
+
+  const setup = async () => {
+    try {
+      // Focus change event is on the Window API (Tauri v2)
+      unlisten = await getCurrentWindow().onFocusChanged((focused) => {
+        // If we regain focus, reapply flags (common moment where click-through gets stuck)
+        if (focused) void reapplyWindowFlags();
+      });
+    } catch (error) {
+      message.error(`Failed to listen focus changes: ${String(error)}`);
+    }
+  };
+
+  void setup();
+
+  return () => {
+    try {
+      unlisten?.();
+    } catch {
+      // ignore
+    }
+  };
+}, [reapplyWindowFlags]);
+	
+// Initial window settings
   useEffect(() => {
     if (!isInitializedRef.current) {
       isInitializedRef.current = true;
 
-      // 设置初始的 alwaysOnTop 状态
+			// Apply initial always-on-top state
       const initAlwaysOnTop = async () => {
         try {
           const window = getWindow();
@@ -44,7 +81,7 @@ export function useWindowEffects() {
     }
   }, [alwaysOnTop, getWindow]);
 
-  // 🎯 处理窗口穿透
+  // click-through
   useEffect(() => {
     const applyPenetrable = async () => {
       try {
@@ -58,7 +95,7 @@ export function useWindowEffects() {
     void applyPenetrable();
   }, [penetrable, getWindow]);
 
-  // 🎯 处理始终置顶（跳过初始化时的重复调用）
+	// Update always-on-top (skip duplicate call during init)
   useEffect(() => {
     if (!isInitializedRef.current) return;
 
@@ -74,26 +111,27 @@ export function useWindowEffects() {
     void applyAlwaysOnTop();
   }, [alwaysOnTop, getWindow]);
 
-  // 🎯 处理窗口显示/隐藏
+  // Handle window show/hide
   useEffect(() => {
     const applyVisibility = async () => {
       try {
         const window = getWindow();
-        if (visible) {
-          await window.show();
-          await window.setFocus();
-        } else {
-          await window.hide();
-        }
+				if (visible) {
+  				await window.show();
+  				await window.setFocus();
+  				await reapplyWindowFlags();
+				} else {
+  				await window.hide();
+				}
       } catch (error) {
         message.error(`Failed to set window visibility: ${String(error)}`);
       }
     };
 
     void applyVisibility();
-  }, [visible, getWindow]);
+  }, [visible, getWindow, reapplyWindowFlags]);
 
-  // 🎯 处理窗口透明度（通过 CSS 变量实现）
+  // Window transparency (via CSS variable)
   useEffect(() => {
     document.documentElement.style.setProperty("--window-opacity", (opacity / 100).toString());
   }, [opacity]);
