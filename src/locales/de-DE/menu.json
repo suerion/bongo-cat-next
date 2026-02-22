@@ -1,1 +1,11 @@
-
+{
+  "scale": {
+    "title": "Skalierung",
+    "default": "Standard",
+    "custom": "Benutzerdefiniert"
+  },
+  "opacity": {
+    "title": "Transparenz",
+    "custom": "Benutzerdefiniert"
+  }
+}
