@@ -1,0 +1,15 @@
+{
+  "language": {
+    "title": "Language",
+    "chinese": "中文",
+    "english": "English",
+    "german": "Deutsch"
+  },
+  "about": "Über",
+  "quit": "Beenden",
+  "restart": "App neu starten",
+  "sourceCode": "Quellcode",
+  "version": "Version",
+  "showCat": "Katze anzeigen",
+  "hideCat": "Katze ausblenden"
+}
