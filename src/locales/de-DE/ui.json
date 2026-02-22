@@ -1,0 +1,9 @@
+{
+  "selectors": {
+    "motionPlaceholder": "Animation auswählen",
+    "expressionPlaceholder": "Gesichtsausdruck auswählen"
+  },
+  "loading": "Wird geladen...",
+  "selectMotion": "Animation auswählen",
+  "selectExpression": "Gesichtsausdruck auswählen"
+}
