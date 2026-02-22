@@ -22,6 +22,15 @@ import enUSMotions from "@/locales/en-US/motions.json";
 import enUSExpressions from "@/locales/en-US/expressions.json";
 import enUSUI from "@/locales/en-US/ui.json";
 
+// german location
+import deDEMenu from "@/locales/de-DE/menu.json";
+import deDEWindow from "@/locales/de-DE/window.json";
+import deDEModels from "@/locales/de-DE/models.json";
+import deDESystem from "@/locales/de-DE/system.json";
+import deDEMotions from "@/locales/de-DE/motions.json";
+import deDEExpressions from "@/locales/de-DE/expressions.json";
+import deDEUI from "@/locales/de-DE/ui.json";
+
 const resources = {
   "zh-CN": {
     menu: zhCNMenu,
@@ -40,6 +49,15 @@ const resources = {
     motions: enUSMotions,
     expressions: enUSExpressions,
     ui: enUSUI
+  },
+	"de-DE": {
+    menu: deDEMenu,
+    window: deDEWindow,
+    models: deDEModels,
+    system: deDESystem,
+    motions: deDEMotions,
+    expressions: deDEExpressions,
+    ui: deDEUI
   }
 };
 
@@ -49,17 +67,31 @@ void i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "zh-CN", // 默认中文
-    fallbackLng: "zh-CN",
+    supportedLngs: ["zh-CN", "en-US", "de-DE"],
+    nonExplicitSupportedLngs: true,
+		
+    lng: "en-US", // default language
+    fallbackLng: "en-US", // fallback if no language detected
     debug: false,
+		
     interpolation: {
-      escapeValue: false // React 已经进行了 XSS 防护
+      escapeValue: false
     },
+		
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
-      lookupLocalStorage: "bongo-cat-language"
-    }
+      lookupLocalStorage: "bongo-cat-language",
+			convertDetectedLanguage: (lng: string) => {
+    		const l = lng.toLowerCase();
+		
+				// map all German variants to de-DE
+    		if (l === "de" || l.startsWith("de-")) return "de-DE";
+
+    		// keep as-is otherwise
+    		return lng;
+    	}
+		}
   });
 
 export default i18n;
