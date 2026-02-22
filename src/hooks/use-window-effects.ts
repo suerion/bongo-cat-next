@@ -42,10 +42,10 @@ export function useWindowEffects() {
   const setup = async () => {
     try {
       // Focus change event is on the Window API (Tauri v2)
-      unlisten = await getCurrentWindow().onFocusChanged((focused) => {
-        // If we regain focus, reapply flags (common moment where click-through gets stuck)
-        if (focused) void reapplyWindowFlags();
-      });
+		unlisten = await getCurrentWindow().onFocusChanged((event) => {
+  		// Tauri v2 passes an event object with a boolean payload
+  			if (event.payload) void reapplyWindowFlags();
+		});
     } catch (error) {
       message.error(`Failed to listen focus changes: ${String(error)}`);
     }
