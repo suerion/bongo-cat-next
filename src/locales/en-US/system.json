@@ -2,7 +2,8 @@
   "language": {
     "title": "Language",
     "chinese": "中文",
-    "english": "English"
+    "english": "English",
+		"german": "Deutsch"
   },
   "about": "About",
   "quit": "Quit",
