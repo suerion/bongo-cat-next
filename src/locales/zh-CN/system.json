@@ -2,7 +2,8 @@
   "language": {
     "title": "语言",
     "chinese": "中文",
-    "english": "English"
+    "english": "English",
+		"german": "Deutsch"
   },
   "about": "关于",
   "quit": "退出",
