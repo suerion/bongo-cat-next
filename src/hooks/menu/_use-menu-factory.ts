@@ -6,6 +6,7 @@ import { _useMenuBuilder } from "@/hooks/menu/_use-menu-builder";
 import { exit } from "@tauri-apps/plugin-process";
 import { message } from "antd";
 import { i18nInitPromise } from "@/i18n";
+import { useI18n } from "@/hooks/use-i18n";
 
 export type MenuType = "context" | "tray";
 
@@ -25,6 +26,7 @@ export interface MenuOptions {
  */
 export function _useMenuFactory() {
   const { t } = useTranslation(["system"]);
+	const { ready } = useI18n(["menu", "window", "models", "system"]);
   const { visible, setVisible } = useCatStore();
   const {
     createModeSubmenu,
@@ -124,6 +126,9 @@ export function _useMenuFactory() {
   const createMenu = useCallback(
     async (options: MenuOptions) => {
       await i18nInitPromise;
+			if (!ready) {
+				return await Menu.new({ items: [] });
+			}
       const items = [];
 
       // 显示/隐藏猫咪 - 所有菜单都包含
@@ -180,7 +185,8 @@ export function _useMenuFactory() {
       createLanguageSubmenu,
       createAppInfoMenuItems,
       createAppControlMenuItems,
-      t
+      t,
+			ready
     ]
   );
 
