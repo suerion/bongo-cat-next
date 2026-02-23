@@ -5,6 +5,7 @@ import { useCatStore } from "@/stores/cat-store";
 import { _useMenuBuilder } from "@/hooks/menu/_use-menu-builder";
 import { exit } from "@tauri-apps/plugin-process";
 import { message } from "antd";
+import { i18nInitPromise } from "@/i18n";
 
 export type MenuType = "context" | "tray";
 
@@ -97,7 +98,7 @@ export function _useMenuFactory() {
         enabled: false
       })
     ];
-  }, []);
+  }, [t]);
 
   // 🎯 创建应用控制菜单项
   const createAppControlMenuItems = useCallback(async () => {
@@ -122,6 +123,7 @@ export function _useMenuFactory() {
   // 🎯 根据配置创建完整菜单
   const createMenu = useCallback(
     async (options: MenuOptions) => {
+      await i18nInitPromise;
       const items = [];
 
       // 显示/隐藏猫咪 - 所有菜单都包含
