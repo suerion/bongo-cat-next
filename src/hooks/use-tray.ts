@@ -8,10 +8,12 @@ import { message } from "antd";
 import { _useMenuFactory } from "@/hooks/menu/_use-menu-factory";
 import { useEffect, useRef } from "react";
 import { useI18n } from "@/hooks/use-i18n";
+import { useTranslation } from "react-i18next";
 
 const TRAY_ID = "BONGO_CAT_TRAY";
 
 export function useTray() {
+	const { i18n } = useTranslation();
   const { createMenu, menuStates } = _useMenuFactory();
   const { ready } = useI18n(["menu", "window", "models", "system"]);
   const trayRef = useRef<TrayIcon | null>(null);
@@ -59,6 +61,10 @@ export function useTray() {
       message.error(`Failed to update tray menu: ${String(error)}`);
     }
   };
+  useEffect(() => {
+    if (!ready) return;
+    if (!trayRef.current) void createTray();
+  }, [ready]);
 
   // 🎯 监听所有状态变化，自动更新托盘菜单
   useEffect(() => {
@@ -70,7 +76,7 @@ export function useTray() {
     };
 
     void updateMenu();
-  }, [menuStates, ready]); // 依赖菜单状态
+  }, [menuStates, ready, i18n.language]); // 依赖菜单状态
 
   return {
     createTray
