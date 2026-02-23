@@ -102,6 +102,7 @@ jobs:
           CI: false
           PLATFORM: ${{ matrix.platform }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_PUBLIC_I18N_DEBUG: "1"
         with:
           tagName: ${{ needs.create-release.outputs.tag }}
           releaseName: 'BongoCat Next ${{ needs.create-release.outputs.tag }}'
@@ -110,3 +111,4 @@ jobs:
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
 
           args: --target ${{ matrix.target }} 
+
