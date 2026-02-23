@@ -67,6 +67,8 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources,
+      ns: ["menu", "window", "models", "system", "motions", "expressions", "ui"],
+      defaultNS: "menu",
       supportedLngs: ["zh-CN", "en-US", "de-DE"],
       fallbackLng: "en-US",
       nonExplicitSupportedLngs: true,
