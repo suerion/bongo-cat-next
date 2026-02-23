@@ -62,7 +62,7 @@ const resources = {
 };
 
 if (!i18n.isInitialized) {
-  i18n
+  void i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
