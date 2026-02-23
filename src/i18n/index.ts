@@ -61,34 +61,35 @@ const resources = {
   }
 };
 
-export const i18nInitPromise: Promise<typeof i18n> =
-  i18n.isInitialized ? Promise.resolve(i18n) : i18n
-        .use(LanguageDetector)
-        .use(initReactI18next)
-        .init({
-          resources,
-          supportedLngs: ["zh-CN", "en-US", "de-DE"],
-          nonExplicitSupportedLngs: true,
-          lng: "en-US",
-          fallbackLng: "en-US",
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources,
+      supportedLngs: ["zh-CN", "en-US", "de-DE"],
+      fallbackLng: "en-US",
+      nonExplicitSupportedLngs: true,
+      initImmediate: false,
+      debug: false,
 
-          initImmediate: false,
+      interpolation: {
+        escapeValue: false
+      },
 
-          debug: false,
-          interpolation: { escapeValue: false },
-          detection: {
-            order: ["localStorage", "navigator"],
-            caches: ["localStorage"],
-            lookupLocalStorage: "bongo-cat-language",
-            convertDetectedLanguage: (lng: string) => {
-              const l = lng.toLowerCase();
-              if (l === "de" || l.startsWith("de-")) return "de-DE";
-              if (l === "en" || l.startsWith("en-")) return "en-US";
-              if (l === "zh" || l.startsWith("zh-")) return "zh-CN";
-              return lng;
-            },
-          },
-        })
-        .then(() => i18n);
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "bongo-cat-language",
+        convertDetectedLanguage: (lng: string) => {
+          const l = lng.toLowerCase();
+          if (l.startsWith("de")) return "de-DE";
+          if (l.startsWith("en")) return "en-US";
+          if (l.startsWith("zh")) return "zh-CN";
+          return "en-US";
+        }
+      }
+    });
+}
 
 export default i18n;
