@@ -61,37 +61,34 @@ const resources = {
   }
 };
 
-// 标准 react-i18next 配置
-void i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    supportedLngs: ["zh-CN", "en-US", "de-DE"],
-    nonExplicitSupportedLngs: true,
-		
-    lng: "en-US", // default language
-    fallbackLng: "en-US", // fallback if no language detected
-    debug: false,
-		
-    interpolation: {
-      escapeValue: false
-    },
-		
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "bongo-cat-language",
-			convertDetectedLanguage: (lng: string) => {
-    		const l = lng.toLowerCase();
-		
-				// map all German variants to de-DE
-    		if (l === "de" || l.startsWith("de-")) return "de-DE";
+export const i18nInitPromise: Promise<typeof i18n> =
+  i18n.isInitialized ? Promise.resolve(i18n) : i18n
+        .use(LanguageDetector)
+        .use(initReactI18next)
+        .init({
+          resources,
+          supportedLngs: ["zh-CN", "en-US", "de-DE"],
+          nonExplicitSupportedLngs: true,
+          lng: "en-US",
+          fallbackLng: "en-US",
 
-    		// keep as-is otherwise
-    		return lng;
-    	}
-		}
-  });
+          initImmediate: false,
+
+          debug: false,
+          interpolation: { escapeValue: false },
+          detection: {
+            order: ["localStorage", "navigator"],
+            caches: ["localStorage"],
+            lookupLocalStorage: "bongo-cat-language",
+            convertDetectedLanguage: (lng: string) => {
+              const l = lng.toLowerCase();
+              if (l === "de" || l.startsWith("de-")) return "de-DE";
+              if (l === "en" || l.startsWith("en-")) return "en-US";
+              if (l === "zh" || l.startsWith("zh-")) return "zh-CN";
+              return lng;
+            },
+          },
+        })
+        .then(() => i18n);
 
 export default i18n;
