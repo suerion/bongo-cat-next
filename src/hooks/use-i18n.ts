@@ -21,7 +21,7 @@ export function useLanguage() {
     (lng: string) => {
       return i18n.language === lng;
     },
-    [i18n.language]
+    [i18n]
   );
 
   // 预定义的语言切换函数，使用useCallback确保稳定
@@ -51,12 +51,13 @@ export function useLanguage() {
  * 预设命名空间的快捷方法
  */
 export function useI18n(namespaces?: string | string[]) {
-  const { t, ready } = useTranslation(namespaces);
-  const language = useLanguage();
+  const { t, i18n } = useTranslation(namespaces);
 
-  return {
-    t,
-		ready,
-    ...language
-  };
+  const changeLanguage = useCallback(async (lng: string) => {
+    await i18n.changeLanguage(lng);
+  }, [i18n]);
+
+  const isLanguage = useCallback((lng: string) => i18n.language === lng, [i18n]);
+
+  return { t, i18n, changeLanguage, isLanguage, currentLanguage: i18n.language };
 }
