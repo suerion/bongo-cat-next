@@ -29,7 +29,7 @@ export function I18nDebug() {
         `isInitialized: ${i18n.isInitialized}`,
         `language: ${i18n.language}`,
         `resolvedLanguage: ${i18n.resolvedLanguage}`,
-        `languages array: ${i18n.languages?.join(", ")}`,
+        `languages array: ${i18n.languages.join(", ")}`,
         "",
         `has(${lng}, menu): ${i18n.hasResourceBundle(lng, "menu")}`,
         `has(${lng}, system): ${i18n.hasResourceBundle(lng, "system")}`,
