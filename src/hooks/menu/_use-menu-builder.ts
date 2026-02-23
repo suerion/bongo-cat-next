@@ -14,7 +14,7 @@ import { useModelStore } from "@/stores/model-store";
  */
 export function _useMenuBuilder() {
   // 使用统一的 useI18n Hook
-  const { t, changeLanguage, isLanguage } = useI18n(["menu", "window", "models", "system"]);
+  const { t, changeLanguage, isLanguage, currentLanguage } = useI18n(["menu", "window", "models", "system"]);
 
   const {
     scale,
@@ -230,7 +230,8 @@ export function _useMenuBuilder() {
       alwaysOnTop,
       mirrorMode,
       selectorsVisible,
-      currentModel
+      currentModel,
+      currentLanguage
     }
   };
 }
