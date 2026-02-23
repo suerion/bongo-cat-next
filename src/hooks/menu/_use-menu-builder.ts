@@ -89,7 +89,7 @@ export function _useMenuBuilder() {
     }
 
     return items;
-  }, [opacity, setOpacity]);
+  }, [opacity, setOpacity, t]);
 
   // 🎯 创建模型模式选项子菜单
   const getModeMenuItems = useCallback(async () => {
@@ -204,7 +204,7 @@ export function _useMenuBuilder() {
       text: t("language.title", { ns: "system" }),
       items: languageItems
     });
-  }, [t, isLanguage, changeLanguage, currentLanguage]);
+  }, [t, isLanguage, changeLanguage]);
 
   return {
     // 子菜单构建函数
