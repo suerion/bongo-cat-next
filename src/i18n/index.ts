@@ -69,6 +69,7 @@ if (!i18n.isInitialized) {
       resources,
       ns: ["menu", "window", "models", "system", "motions", "expressions", "ui"],
       defaultNS: "menu",
+      keySeparator: false,
       supportedLngs: ["zh-CN", "en-US", "de-DE"],
       fallbackLng: "en-US",
       nonExplicitSupportedLngs: true,
