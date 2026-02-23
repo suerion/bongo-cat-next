@@ -67,11 +67,11 @@ export function useTray() {
   // 🎯 监听所有状态变化，自动更新托盘菜单
   useEffect(() => {
     const updateMenu = async () => {
-      if (!trayRef.current) return;
-      if (!i18n.isInitialized) return; 
-      if (trayRef.current) {
-        await updateTrayMenu(trayRef.current);
-      }
+    	const tray = trayRef.current;
+    	if (!tray) return;
+    	if (!i18n.isInitialized) return;
+
+    	await updateTrayMenu(tray);
     };
 
     void updateMenu();
