@@ -27,10 +27,10 @@ export function useLanguage() {
   // 预定义的语言切换函数，使用useCallback确保稳定
   const toZhCN = useCallback(() => changeLanguage("zh-CN"), [changeLanguage]);
   const toEnUS = useCallback(() => changeLanguage("en-US"), [changeLanguage]);
-	const toDeDE = useCallback(() => changeLanguage("de-DE"), [changeLanguage]);
+  const toDeDE = useCallback(() => changeLanguage("de-DE"), [changeLanguage]);
   const isZhCN = useCallback(() => isLanguage("zh-CN"), [isLanguage]);
   const isEnUS = useCallback(() => isLanguage("en-US"), [isLanguage]);
-	const isDeDE = useCallback(() => isLanguage("de-DE"), [isLanguage]);
+  const isDeDE = useCallback(() => isLanguage("de-DE"), [isLanguage]);
 
   return {
     currentLanguage: i18n.language,
@@ -39,10 +39,10 @@ export function useLanguage() {
     // 常用语言快捷方法
     toZhCN,
     toEnUS,
-		toDeDE,
+    toDeDE,
     isZhCN,
     isEnUS,
-		isDeDE
+    isDeDE
   };
 }
 
