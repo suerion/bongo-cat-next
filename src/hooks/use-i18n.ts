@@ -51,11 +51,12 @@ export function useLanguage() {
  * 预设命名空间的快捷方法
  */
 export function useI18n(namespaces?: string | string[]) {
-  const { t } = useTranslation(namespaces);
+  const { t, ready } = useTranslation(namespaces);
   const language = useLanguage();
 
   return {
     t,
+		ready,
     ...language
   };
 }
