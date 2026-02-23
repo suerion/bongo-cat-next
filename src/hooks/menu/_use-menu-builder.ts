@@ -190,6 +190,13 @@ export function _useMenuBuilder() {
         action: () => {
           void changeLanguage("en-US");
         }
+      }),
+			CheckMenuItem.new({
+        text: t("language.german", { ns: "system" }),
+        checked: isLanguage("de-DE"),
+        action: () => {
+          void changeLanguage("de-DE");
+        }
       })
     ]);
 
