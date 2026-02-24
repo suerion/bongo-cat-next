@@ -42,6 +42,21 @@ export function I18nDebug() {
     return typeof wc === "string" ? wc : undefined;
   })();
 
+	const tMenuImplicit = i18n.t("scale.title", { ns: "menu" });
+  const tMenuExplicit = i18n.t("scale.title", { ns: "menu", lng });
+
+  const tSystemImplicit = i18n.t("system:hideCat");
+  const tSystemExplicit = i18n.t("hideCat", { ns: "system", lng });
+
+  const existsMenu = i18n.exists("scale.title", { ns: "menu", lng });
+  const existsSystem = i18n.exists("hideCat", { ns: "system", lng });
+
+  const resMenuKeySep = String(i18n.options.keySeparator);
+  const resNsSep = String(i18n.options.nsSeparator);
+
+  const getMenuNested = i18n.getResource(lng, "menu", "scale.title") as unknown;
+  const getSystem = i18n.getResource(lng, "system", "hideCat") as unknown;
+
   return (
     <div
       style={{
@@ -76,8 +91,19 @@ export function I18nDebug() {
         `system.hideCat (direct): ${String(systemHideCat)}`,
         `system.system?.hideCat (wrapper): ${String(systemWrapperHideCat)}`,
         "",
-        `t(menu scale.title): ${i18n.t("scale.title", { ns: "menu" })}`,
-        `t(system:hideCat): ${i18n.t("system:hideCat")}`,
+        `options.keySeparator: ${resMenuKeySep}`,
+        `options.nsSeparator: ${resNsSep}`,
+        "",
+        `exists(menu scale.title): ${String(existsMenu)}`,
+        `exists(system hideCat): ${String(existsSystem)}`,
+        "",
+        `getResource(menu scale.title): ${String(getMenuNested)}`,
+        `getResource(system hideCat): ${String(getSystem)}`,
+        "",
+        `t(menu implicit): ${tMenuImplicit}`,
+        `t(menu explicit lng): ${tMenuExplicit}`,
+        `t(system implicit): ${tSystemImplicit}`,
+        `t(system explicit lng): ${tSystemExplicit}`
       ].join("\n")}
     </div>
   );
