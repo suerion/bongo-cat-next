@@ -15,29 +15,32 @@ export function I18nDebug() {
   const systemTop = system ? Object.keys(system).slice(0, 20) : [];
 
   const menuScale =
-    menu && typeof menu["scale"] === "object"
+    menu && typeof menu["scale"] === "object" && menu["scale"] !== null
       ? (menu["scale"] as Record<string, unknown>)
       : undefined;
 
   const menuScaleTitleNested =
     menuScale && typeof menuScale["title"] === "string"
-      ? (menuScale["title"] as string)
+      ? menuScale["title"]
       : undefined;
 
   const menuScaleTitleFlat =
     menu && typeof menu["scale.title"] === "string"
-      ? (menu["scale.title"] as string)
+      ? menu["scale.title"]
       : undefined;
 
   const systemHideCat =
     system && typeof system["hideCat"] === "string"
-      ? (system["hideCat"] as string)
+      ? system["hideCat"]
       : undefined;
 
-  const systemWrapperHideCat =
-    system &&
-    typeof system["system"] === "object" &&
-    (system["system"] as Record<string, unknown>)["hideCat"];
+  const systemWrapperHideCat = (() => {
+    if (!system) return undefined;
+    const w = system["system"];
+    if (typeof w !== "object" || w === null) return undefined;
+    const wc = (w as Record<string, unknown>)["hideCat"];
+    return typeof wc === "string" ? wc : undefined;
+  })();
 
   return (
     <div
