@@ -59,6 +59,10 @@ export function I18nDebug() {
 
   const loadedMenu = i18n.hasLoadedNamespace("menu", { lng });
   const loadedSystem = i18n.hasLoadedNamespace("system", { lng });
+	
+  const trKeySep = String((i18n.services as unknown as { translator?: { options?: { keySeparator?: unknown } } })?.translator?.options?.keySeparator);
+  const trNsSep = String((i18n.services as unknown as { translator?: { options?: { nsSeparator?: unknown } } })?.translator?.options?.nsSeparator);
+  const trLng = String((i18n.services as unknown as { translator?: { language?: unknown } })?.translator?.language);
 
   return (
     <div
@@ -110,7 +114,12 @@ export function I18nDebug() {
         `t(menu implicit): ${tMenuImplicit}`,
         `t(menu explicit lng): ${tMenuExplicit}`,
         `t(system implicit): ${tSystemImplicit}`,
-        `t(system explicit lng): ${tSystemExplicit}`
+        `t(system explicit lng): ${tSystemExplicit}`,
+		`i18n.options.keySeparator: ${resMenuKeySep}`,
+		`i18n.options.nsSeparator: ${resNsSep}`,
+		`translator.language: ${trLng}`,
+		`translator.options.keySeparator: ${trKeySep}`,
+		`translator.options.nsSeparator: ${trNsSep}`
       ].join("\n")}
     </div>
   );
