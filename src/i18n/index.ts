@@ -88,7 +88,6 @@ if (!i18n.isInitialized) {
           return "en-US";
         },
       },
-      // wichtig: React nicht suspenden lassen (optional aber hilfreich)
       react: { useSuspense: false },
     })
     .then(() => {
