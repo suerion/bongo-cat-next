@@ -3,6 +3,32 @@
 import React from "react";
 import i18n from "@/i18n";
 
+function getTranslatorInfo(i18nInstance: unknown) {
+  const i = i18nInstance as { services?: unknown };
+
+  const services = i.services;
+  if (!services || typeof services !== "object") {
+    return { trLng: "n/a", trKeySep: "n/a", trNsSep: "n/a" };
+  }
+
+  const s = services as { translator?: unknown };
+  const translator = s.translator;
+  if (!translator || typeof translator !== "object") {
+    return { trLng: "n/a", trKeySep: "n/a", trNsSep: "n/a" };
+  }
+
+  const t = translator as { language?: unknown; options?: unknown };
+
+  const options = t.options;
+  const o = options && typeof options === "object" ? (options as Record<string, unknown>) : {};
+
+  return {
+    trLng: String(t.language),
+    trKeySep: String(o["keySeparator"]),
+    trNsSep: String(o["nsSeparator"]),
+  };
+}
+
 export function I18nDebug() {
   if (process.env.NEXT_PUBLIC_I18N_DEBUG !== "1") return null;
 
@@ -59,10 +85,8 @@ export function I18nDebug() {
 
   const loadedMenu = i18n.hasLoadedNamespace("menu", { lng });
   const loadedSystem = i18n.hasLoadedNamespace("system", { lng });
-	
-  const trKeySep = String((i18n.services as unknown as { translator?: { options?: { keySeparator?: unknown } } })?.translator?.options?.keySeparator);
-  const trNsSep = String((i18n.services as unknown as { translator?: { options?: { nsSeparator?: unknown } } })?.translator?.options?.nsSeparator);
-  const trLng = String((i18n.services as unknown as { translator?: { language?: unknown } })?.translator?.language);
+
+  const { trLng, trKeySep, trNsSep } = getTranslatorInfo(i18n);
 
   return (
     <div
@@ -109,17 +133,16 @@ export function I18nDebug() {
         `getResource(menu scale.title): ${String(getMenuNested)}`,
         `getResource(system hideCat): ${String(getSystem)}`,
         "",
-		`hasLoadedNamespace(menu): ${String(loadedMenu)}`,
-		`hasLoadedNamespace(system): ${String(loadedSystem)}`,
+        `hasLoadedNamespace(menu): ${String(loadedMenu)}`,
+        `hasLoadedNamespace(system): ${String(loadedSystem)}`,
         `t(menu implicit): ${tMenuImplicit}`,
         `t(menu explicit lng): ${tMenuExplicit}`,
         `t(system implicit): ${tSystemImplicit}`,
         `t(system explicit lng): ${tSystemExplicit}`,
-		`i18n.options.keySeparator: ${resMenuKeySep}`,
-		`i18n.options.nsSeparator: ${resNsSep}`,
-		`translator.language: ${trLng}`,
-		`translator.options.keySeparator: ${trKeySep}`,
-		`translator.options.nsSeparator: ${trNsSep}`
+        "",
+        `translator.language: ${trLng}`,
+        `translator.options.keySeparator: ${trKeySep}`,
+        `translator.options.nsSeparator: ${trNsSep}`,
       ].join("\n")}
     </div>
   );
