@@ -73,6 +73,8 @@ export function I18nDebug() {
         color: "white",
         fontSize: 12,
         maxWidth: 760,
+        maxHeight: "70vh",
+        overflow: "auto",
         whiteSpace: "pre-wrap",
       }}
     >
