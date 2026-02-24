@@ -42,7 +42,7 @@ export function I18nDebug() {
     return typeof wc === "string" ? wc : undefined;
   })();
 
-	const tMenuImplicit = i18n.t("scale.title", { ns: "menu" });
+  const tMenuImplicit = i18n.t("scale.title", { ns: "menu" });
   const tMenuExplicit = i18n.t("scale.title", { ns: "menu", lng });
 
   const tSystemImplicit = i18n.t("system:hideCat");
@@ -56,6 +56,9 @@ export function I18nDebug() {
 
   const getMenuNested = i18n.getResource(lng, "menu", "scale.title") as unknown;
   const getSystem = i18n.getResource(lng, "system", "hideCat") as unknown;
+
+  const loadedMenu = i18n.hasLoadedNamespace("menu", { lng });
+  const loadedSystem = i18n.hasLoadedNamespace("system", { lng });
 
   return (
     <div
@@ -100,6 +103,8 @@ export function I18nDebug() {
         `getResource(menu scale.title): ${String(getMenuNested)}`,
         `getResource(system hideCat): ${String(getSystem)}`,
         "",
+		`hasLoadedNamespace(menu): ${String(loadedMenu)}`,
+		`hasLoadedNamespace(system): ${String(loadedSystem)}`,
         `t(menu implicit): ${tMenuImplicit}`,
         `t(menu explicit lng): ${tMenuExplicit}`,
         `t(system implicit): ${tSystemImplicit}`,
