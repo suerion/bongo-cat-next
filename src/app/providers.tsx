@@ -10,7 +10,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(i18n.isInitialized);
 
   useEffect(() => {
-    void i18nReady.finally(() => setReady(true));
+    void i18nReady.finally(() => {
+      setReady(true);
+    });
   }, []);
 
   if (!ready) return null;
