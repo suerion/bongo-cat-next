@@ -6,7 +6,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 declare global {
   // eslint-disable-next-line no-var
-  var __BONGO_I18N__: I18nType | undefined;
+  var __BONGO_I18N_READY__: Promise<I18nType> | undefined;
 }
 
 const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
@@ -47,44 +47,45 @@ globalThis.__BONGO_I18N__ = i18n;
 export { namespaces };
 
 export const i18nReady: Promise<I18nType> =
-  i18n.isInitialized
-    ? Promise.resolve(i18n)
-    : i18n
-        .use(LanguageDetector)
-        .use(initReactI18next)
-        .init({
-          resources,
-          ns: [...namespaces],
-          defaultNS: "menu",
-          keySeparator: ".",
-          nsSeparator: ":",
-          supportedLngs: ["zh-CN", "en-US", "de-DE"],
-          fallbackLng: "en-US",
-          nonExplicitSupportedLngs: true,
-          initImmediate: false,
-          debug: false,
-          interpolation: { escapeValue: false },
-          detection: {
-            order: ["localStorage", "navigator"],
-            caches: ["localStorage"],
-            lookupLocalStorage: "bongo-cat-language",
-            convertDetectedLanguage: (lng: string) => {
-              const l = lng.toLowerCase();
-              if (l.startsWith("de")) return "de-DE";
-              if (l.startsWith("en")) return "en-US";
-              if (l.startsWith("zh")) return "zh-CN";
-              return "en-US";
-            },
-          },
-          react: { useSuspense: false },
-        })
-        .then(() => {
-          void i18n.loadNamespaces([...namespaces]);
-          return i18n;
-        })
-        .catch((e: unknown) => {
-          console.error("[i18n] init failed:", e);
-          throw e;
-        });
+  globalThis.__BONGO_I18N_READY__ ??
+  (globalThis.__BONGO_I18N_READY__ = i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources,
+      ns: [...namespaces],
+      defaultNS: "menu",
+      keySeparator: ".",
+      nsSeparator: ":",
+      supportedLngs: ["zh-CN", "en-US", "de-DE"],
+      fallbackLng: "en-US",
+      nonExplicitSupportedLngs: true,
+      initImmediate: false,
+      debug: false,
+      interpolation: { escapeValue: false },
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "bongo-cat-language",
+        convertDetectedLanguage: (lng: string) => {
+          const l = lng.toLowerCase();
+          if (l.startsWith("de")) return "de-DE";
+          if (l.startsWith("en")) return "en-US";
+          if (l.startsWith("zh")) return "zh-CN";
+          return "en-US";
+        },
+      },
+      react: { useSuspense: false },
+    })
+    .then(() => {
+      void i18n.loadNamespaces([...namespaces]);
+      return i18n;
+    })
+    .catch((e: unknown) => {
+      console.error("[i18n] init failed:", e);
+      // wichtig: promise zurücksetzen, sonst bleibt sie kaputt gecached
+      globalThis.__BONGO_I18N_READY__ = undefined;
+      throw e;
+    }));
 
 export default i18n;
