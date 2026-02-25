@@ -73,7 +73,7 @@ export const i18nReady: Promise<typeof i18n> =
           void i18n.loadNamespaces([...namespaces]);
           return i18n;
         })
-        .catch((e) => {
+        .catch((e: unknown) => {
           console.error("[i18n] init failed:", e);
           throw e;
         });
