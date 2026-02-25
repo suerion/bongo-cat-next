@@ -4,11 +4,6 @@ import i18next, { type i18n as I18nType } from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __BONGO_I18N_READY__: Promise<I18nType> | undefined;
-}
-
 const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
 
 import zhCNMenu from "@/locales/zh-CN/menu.json";
@@ -46,7 +41,8 @@ const g = globalThis as unknown as {
   __BONGO_I18N_READY__?: Promise<I18nType>;
 };
 
-const i18n: I18nType = g.__BONGO_I18N__ ?? i18next;
+const i18n: I18nType =
+  g.__BONGO_I18N__ ?? i18next.createInstance();
 g.__BONGO_I18N__ = i18n;
 
 export { namespaces };
