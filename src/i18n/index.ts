@@ -28,72 +28,54 @@ import deDEMotions from "@/locales/de-DE/motions.json";
 import deDEExpressions from "@/locales/de-DE/expressions.json";
 import deDEUI from "@/locales/de-DE/ui.json";
 
-const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
+export const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
 
 const resources = {
-  "zh-CN": {
-    menu: zhCNMenu,
-    window: zhCNWindow,
-    models: zhCNModels,
-    system: zhCNSystem,
-    motions: zhCNMotions,
-    expressions: zhCNExpressions,
-    ui: zhCNUI,
-  },
-  "en-US": {
-    menu: enUSMenu,
-    window: enUSWindow,
-    models: enUSModels,
-    system: enUSSystem,
-    motions: enUSMotions,
-    expressions: enUSExpressions,
-    ui: enUSUI,
-  },
-  "de-DE": {
-    menu: deDEMenu,
-    window: deDEWindow,
-    models: deDEModels,
-    system: deDESystem,
-    motions: deDEMotions,
-    expressions: deDEExpressions,
-    ui: deDEUI,
-  },
+  "zh-CN": { menu: zhCNMenu, window: zhCNWindow, models: zhCNModels, system: zhCNSystem, motions: zhCNMotions, expressions: zhCNExpressions, ui: zhCNUI },
+  "en-US": { menu: enUSMenu, window: enUSWindow, models: enUSModels, system: enUSSystem, motions: enUSMotions, expressions: enUSExpressions, ui: enUSUI },
+  "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-if (!i18n.isInitialized) {
-  void i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      resources,
-      ns: [...namespaces],
-      defaultNS: "menu",
-      keySeparator: ".",
-      nsSeparator: ":",
-      supportedLngs: ["zh-CN", "en-US", "de-DE"],
-      fallbackLng: "en-US",
-      nonExplicitSupportedLngs: true,
-      initImmediate: false,
-      debug: false,
-      interpolation: { escapeValue: false },
-      detection: {
-        order: ["localStorage", "navigator"],
-        caches: ["localStorage"],
-        lookupLocalStorage: "bongo-cat-language",
-        convertDetectedLanguage: (lng: string) => {
-          const l = lng.toLowerCase();
-          if (l.startsWith("de")) return "de-DE";
-          if (l.startsWith("en")) return "en-US";
-          if (l.startsWith("zh")) return "zh-CN";
-          return "en-US";
-        },
-      },
-      react: { useSuspense: false },
-    })
-    .then(() => {
 
-      void i18n.loadNamespaces([...namespaces]);
-    });
-}
+export const i18nReady: Promise<typeof i18n> =
+  i18n.isInitialized
+    ? Promise.resolve(i18n)
+    : i18n
+        .use(LanguageDetector)
+        .use(initReactI18next)
+        .init({
+          resources,
+          ns: [...namespaces],
+          defaultNS: "menu",
+          keySeparator: ".",
+          nsSeparator: ":",
+          supportedLngs: ["zh-CN", "en-US", "de-DE"],
+          fallbackLng: "en-US",
+          nonExplicitSupportedLngs: true,
+          initImmediate: false,
+          debug: false,
+          interpolation: { escapeValue: false },
+          detection: {
+            order: ["localStorage", "navigator"],
+            caches: ["localStorage"],
+            lookupLocalStorage: "bongo-cat-language",
+            convertDetectedLanguage: (lng: string) => {
+              const l = lng.toLowerCase();
+              if (l.startsWith("de")) return "de-DE";
+              if (l.startsWith("en")) return "en-US";
+              if (l.startsWith("zh")) return "zh-CN";
+              return "en-US";
+            },
+          },
+          react: { useSuspense: false },
+        })
+        .then(() => {
+          void i18n.loadNamespaces([...namespaces]);
+          return i18n;
+        })
+        .catch((e) => {
+          console.error("[i18n] init failed:", e);
+          throw e;
+        });
 
 export default i18n;
