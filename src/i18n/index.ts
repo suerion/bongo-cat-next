@@ -41,7 +41,7 @@ const resources = {
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-const i18n: I18nType = globalThis.__BONGO_I18N__ ?? i18next.createInstance();
+const i18n: I18nType = globalThis.__BONGO_I18N__ ?? i18next;
 globalThis.__BONGO_I18N__ = i18n;
 
 export { namespaces };
