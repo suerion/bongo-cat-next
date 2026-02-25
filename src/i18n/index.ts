@@ -1,8 +1,15 @@
 "use client";
 
-import i18n from "i18next";
+import i18next, { type i18n as I18nType } from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __BONGO_I18N__: I18nType | undefined;
+}
+
+const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
 
 import zhCNMenu from "@/locales/zh-CN/menu.json";
 import zhCNWindow from "@/locales/zh-CN/window.json";
@@ -28,16 +35,18 @@ import deDEMotions from "@/locales/de-DE/motions.json";
 import deDEExpressions from "@/locales/de-DE/expressions.json";
 import deDEUI from "@/locales/de-DE/ui.json";
 
-export const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
-
 const resources = {
   "zh-CN": { menu: zhCNMenu, window: zhCNWindow, models: zhCNModels, system: zhCNSystem, motions: zhCNMotions, expressions: zhCNExpressions, ui: zhCNUI },
   "en-US": { menu: enUSMenu, window: enUSWindow, models: enUSModels, system: enUSSystem, motions: enUSMotions, expressions: enUSExpressions, ui: enUSUI },
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
+const i18n: I18nType = globalThis.__BONGO_I18N__ ?? i18next.createInstance();
+globalThis.__BONGO_I18N__ = i18n;
 
-export const i18nReady: Promise<typeof i18n> =
+export { namespaces };
+
+export const i18nReady: Promise<I18nType> =
   i18n.isInitialized
     ? Promise.resolve(i18n)
     : i18n
