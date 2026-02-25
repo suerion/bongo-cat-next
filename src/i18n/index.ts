@@ -41,14 +41,19 @@ const resources = {
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-const i18n: I18nType = globalThis.__BONGO_I18N__ ?? i18next;
-globalThis.__BONGO_I18N__ = i18n;
+const g = globalThis as unknown as {
+  __BONGO_I18N__?: I18nType;
+  __BONGO_I18N_READY__?: Promise<I18nType>;
+};
+
+const i18n: I18nType = g.__BONGO_I18N__ ?? i18next;
+g.__BONGO_I18N__ = i18n;
 
 export { namespaces };
 
 export const i18nReady: Promise<I18nType> =
-  globalThis.__BONGO_I18N_READY__ ??
-  (globalThis.__BONGO_I18N_READY__ = i18n
+  g.__BONGO_I18N_READY__ ??
+  (g.__BONGO_I18N_READY__ = i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
@@ -83,8 +88,7 @@ export const i18nReady: Promise<I18nType> =
     })
     .catch((e: unknown) => {
       console.error("[i18n] init failed:", e);
-      // wichtig: promise zurücksetzen, sonst bleibt sie kaputt gecached
-      globalThis.__BONGO_I18N_READY__ = undefined;
+      g.__BONGO_I18N_READY__ = undefined;
       throw e;
     }));
 
