@@ -78,10 +78,7 @@ export const i18nReady: Promise<I18nType> =
       },
       react: { useSuspense: false },
     })
-    .then(() => {
-      void i18n.loadNamespaces([...namespaces]);
-      return i18n;
-    })
+    .then(() => i18n)
     .catch((e: unknown) => {
       console.error("[i18n] init failed:", e);
       g.__BONGO_I18N_READY__ = undefined;
