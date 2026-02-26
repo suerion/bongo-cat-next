@@ -17,7 +17,7 @@ export function useTray() {
   const trayRef = useRef<TrayIcon | null>(null);
 
   const isTranslatorReady = useCallback(() => {
-    return Boolean(i18n.services && 'translator' in i18n.services);
+    return i18n.services !== undefined && 'translator' in i18n.services;
   }, [i18n.services]);
 
   const createTray = async () => {
@@ -50,8 +50,9 @@ export function useTray() {
       const tray = await TrayIcon.new(options);
       trayRef.current = tray;
       return tray;
-    } catch (error) {
-      message.error(`Failed to create system tray: ${String(error)}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      message.error(`Failed to create system tray: ${errorMessage}`);
     }
   };
 
@@ -60,8 +61,9 @@ export function useTray() {
       if (!isTranslatorReady()) return;
       const menu = await createMenu({ type: "tray" });
       await tray.setMenu(menu);
-    } catch (error) {
-      message.error(`Failed to update tray menu: ${String(error)}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      message.error(`Failed to update tray menu: ${errorMessage}`);
     }
   };
 	
