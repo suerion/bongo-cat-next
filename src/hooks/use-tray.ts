@@ -16,8 +16,8 @@ export function useTray() {
   const { createMenu, menuStates } = _useMenuFactory();
   const trayRef = useRef<TrayIcon | null>(null);
 
-	const isTranslatorReady = () => {
-    return !!(i18n.services?.translator);
+  const isTranslatorReady = () => {
+    return !!(i18n.services && (i18n.services as any).translator);
   };
 
   const createTray = async () => {
