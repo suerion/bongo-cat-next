@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 function getTranslatorInfo(i18nInstance: unknown) {
   const i = i18nInstance as { services?: unknown };
@@ -30,7 +30,11 @@ function getTranslatorInfo(i18nInstance: unknown) {
 }
 
 export function I18nDebug() {
+	const { i18n: contextI18n } = useTranslation();
+	
   if (process.env.NEXT_PUBLIC_I18N_DEBUG !== "1") return null;
+
+	const i18n = contextI18n;
 
   const lng: string = i18n.resolvedLanguage ?? i18n.language;
 
