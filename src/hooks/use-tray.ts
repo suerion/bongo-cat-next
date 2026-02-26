@@ -11,21 +11,24 @@ import { useTranslation } from "react-i18next";
 
 const TRAY_ID = "BONGO_CAT_TRAY";
 
+function hasTranslator(i18nInstance: unknown): boolean {
+  const i = i18nInstance as { services?: unknown };
+  const services = i.services;
+  if (!services || typeof services !== "object") return false;
+  return "translator" in (services as Record<string, unknown>);
+}
+
 export function useTray() {
   const { i18n } = useTranslation();
   const { createMenu, menuStates } = _useMenuFactory();
   const trayRef = useRef<TrayIcon | null>(null);
 
-  const isTranslatorReady = useCallback(() => {
-    return i18n.services !== undefined && 'translator' in i18n.services;
-  }, [i18n.services]);
+  const isTranslatorReady = useCallback(() => hasTranslator(i18n), [i18n]);
 
   const createTray = async () => {
     try {
-      if (!isTranslatorReady()) {
-        console.log("[useTray] Translator not ready yet, waiting...");
-        return;
-      }
+      if (!isTranslatorReady()) return;
+
       const existingTray = await TrayIcon.getById(TRAY_ID);
       if (existingTray) {
         trayRef.current = existingTray;
@@ -44,7 +47,7 @@ export function useTray() {
         id: TRAY_ID,
         tooltip: `${appName} v${appVersion}`,
         iconAsTemplate: false,
-        menuOnLeftClick: true
+        menuOnLeftClick: true,
       };
 
       const tray = await TrayIcon.new(options);
@@ -66,11 +69,13 @@ export function useTray() {
       message.error(`Failed to update tray menu: ${errorMessage}`);
     }
   };
-	
+
   useEffect(() => {
     const initTray = async () => {
       if (!isTranslatorReady()) {
-        setTimeout(initTray, 100);
+        setTimeout(() => {
+          void initTray();
+        }, 100);
         return;
       }
       if (!trayRef.current) {
@@ -84,18 +89,16 @@ export function useTray() {
   useEffect(() => {
     const tray = trayRef.current;
     if (!tray) return;
-    if (!isTranslatorReady()) return; 
+    if (!isTranslatorReady()) return;
 
     const updateMenuAsync = async () => {
       await updateTrayMenu(tray);
     };
 
-    updateMenuAsync().catch((error) => {
+    updateMenuAsync().catch((error: unknown) => {
       console.error("[useTray] Failed to update menu:", error);
     });
   }, [menuStates, i18n.language, isTranslatorReady]);
 
-  return {
-    createTray
-  };
+  return { createTray };
 }
