@@ -29,12 +29,25 @@ function getTranslatorInfo(i18nInstance: unknown) {
   };
 }
 
+function getInternalDebug(i18nInstance: unknown) {
+  const rec = i18nInstance as Record<string, unknown>;
+  const trReady = rec["__translatorReady"];
+  const svcList = rec["__servicesList"];
+  const initErr = rec["__initError"];
+
+  return {
+    trReady: typeof trReady === "boolean" ? trReady : undefined,
+    svcList: Array.isArray(svcList) ? svcList.map(String) : undefined,
+    initErr: typeof initErr === "string" ? initErr : undefined,
+  };
+}
+
 export function I18nDebug() {
-	const { i18n: contextI18n } = useTranslation();
+  const { i18n: contextI18n } = useTranslation();
 	
   if (process.env.NEXT_PUBLIC_I18N_DEBUG !== "1") return null;
 
-	const i18n = contextI18n;
+  const i18n = contextI18n;
 
   const lng: string = i18n.resolvedLanguage ?? i18n.language;
 
@@ -92,6 +105,8 @@ export function I18nDebug() {
 
   const { trLng, trKeySep, trNsSep } = getTranslatorInfo(i18n);
 
+  const internal = getInternalDebug(i18n);
+
   return (
     <div
       style={{
@@ -147,9 +162,9 @@ export function I18nDebug() {
         `translator.language: ${trLng}`,
         `translator.options.keySeparator: ${trKeySep}`,
         `translator.options.nsSeparator: ${trNsSep}`,
-		`init translator ready: ${String((i18n as any).__translatorReady)}`,
-		`init services: ${(i18n as any).__servicesList?.join(', ') || 'none'}`,
-		`init error: ${(i18n as any).__initError || 'none'}`,
+        `init translator ready: ${String(internal.trReady)}`,
+        `init services: ${internal.svcList?.join(", ") ?? "none"}`,
+        `init error: ${internal.initErr ?? "none"}`,
       ].join("\n")}
     </div>
   );
