@@ -16,13 +16,12 @@ export function useTray() {
   const { createMenu, menuStates } = _useMenuFactory();
   const trayRef = useRef<TrayIcon | null>(null);
 
-  const isTranslatorReady = () => {
-    return !!(i18n.services && (i18n.services as any).translator);
-  };
+  const isTranslatorReady = useCallback(() => {
+    return Boolean(i18n.services && 'translator' in i18n.services);
+  }, [i18n.services]);
 
   const createTray = async () => {
     try {
-      // 检查是否已存在托盘
       if (!isTranslatorReady()) {
         console.log("[useTray] Translator not ready yet, waiting...");
         return;
@@ -30,7 +29,6 @@ export function useTray() {
       const existingTray = await TrayIcon.getById(TRAY_ID);
       if (existingTray) {
         trayRef.current = existingTray;
-        // 更新现有托盘的菜单
         await updateTrayMenu(existingTray);
         return existingTray;
       }
@@ -81,18 +79,19 @@ export function useTray() {
     void initTray();
   }, []);
 
-  // 🎯 监听所有状态变化，自动更新托盘菜单
   useEffect(() => {
-    const updateMenu = async () => {
-    	const tray = trayRef.current;
-    	if (!tray) return;
-      if (!isTranslatorReady()) return; 
+    const tray = trayRef.current;
+    if (!tray) return;
+    if (!isTranslatorReady()) return; 
 
-    	await updateTrayMenu(tray);
+    const updateMenuAsync = async () => {
+      await updateTrayMenu(tray);
     };
 
-    void updateMenu();
-  }, [menuStates, i18n.language]); // 依赖菜单状态
+    updateMenuAsync().catch((error) => {
+      console.error("[useTray] Failed to update menu:", error);
+    });
+  }, [menuStates, i18n.language, isTranslatorReady]);
 
   return {
     createTray
