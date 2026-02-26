@@ -45,7 +45,7 @@ export const i18nReady = new Promise<I18nType>((resolve, reject) => {
   initReject = reject;
 });
 
-export const i18nReady = i18n
+i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
