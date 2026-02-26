@@ -6,7 +6,7 @@ import { resolveResource } from "@tauri-apps/api/path";
 import { TrayIcon } from "@tauri-apps/api/tray";
 import { message } from "antd";
 import { _useMenuFactory } from "@/hooks/menu/_use-menu-factory";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 const TRAY_ID = "BONGO_CAT_TRAY";
@@ -77,7 +77,7 @@ export function useTray() {
     };
 
     void initTray();
-  }, []);
+  }, [isTranslatorReady]);
 
   useEffect(() => {
     const tray = trayRef.current;
