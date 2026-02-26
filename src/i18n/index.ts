@@ -51,7 +51,7 @@ export const i18nReady = i18n
     fallbackLng: "en-US",
     nonExplicitSupportedLngs: true,
     initImmediate: false,
-    debug: false,
+    debug: true,
     interpolation: { escapeValue: false },
     detection: {
       order: ["localStorage", "navigator"],
@@ -65,7 +65,19 @@ export const i18nReady = i18n
         return "en-US";
       },
     },
-    react: { useSuspense: false },
+    react: { 
+      useSuspense: false,
+      bindI18n: 'languageChanged loaded',
+      bindI18nStore: 'added removed',
+    },
+  })
+  .then(() => {
+    console.log('[i18n] Init successful', {
+      hasTranslator: !!i18n.services?.translator,
+      language: i18n.language,
+      services: Object.keys(i18n.services || {})
+    });
+    return i18n;
   });
 
 export default i18n;
