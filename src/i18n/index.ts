@@ -36,61 +36,50 @@ const resources = {
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-const i18n: I18nType = i18next.createInstance();
+const g = globalThis as unknown as {
+  __BONGO_I18N__?: I18nType;
+  __BONGO_I18N_READY__?: Promise<I18nType>;
+};
 
-let initResolve: (value: I18nType) => void;
-let initReject: (reason?: unknown) => void;
-export const i18nReady = new Promise<I18nType>((resolve, reject) => {
-  initResolve = resolve;
-  initReject = reject;
-});
+const i18n: I18nType = g.__BONGO_I18N__ ?? i18next.createInstance();
+g.__BONGO_I18N__ = i18n;
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    ns: [...namespaces],
-    defaultNS: "menu",
-    keySeparator: ".",
-    nsSeparator: ":",
-    supportedLngs: ["zh-CN", "en-US", "de-DE"],
-    fallbackLng: "en-US",
-    nonExplicitSupportedLngs: true,
-    initImmediate: false,
-    debug: true,
-    interpolation: { escapeValue: false },
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "bongo-cat-language",
-      convertDetectedLanguage: (lng: string) => {
-        const l = lng.toLowerCase();
-        if (l.startsWith("de")) return "de-DE";
-        if (l.startsWith("en")) return "en-US";
-        if (l.startsWith("zh")) return "zh-CN";
-        return "en-US";
+export const i18nReady: Promise<I18nType> =
+  g.__BONGO_I18N_READY__ ??
+  (g.__BONGO_I18N_READY__ = i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources,
+      ns: [...namespaces],
+      defaultNS: "menu",
+      keySeparator: ".",
+      nsSeparator: ":",
+      supportedLngs: ["zh-CN", "en-US", "de-DE"],
+      fallbackLng: "en-US",
+      nonExplicitSupportedLngs: true,
+      initImmediate: false,
+      debug: false,
+      interpolation: { escapeValue: false },
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "bongo-cat-language",
+        convertDetectedLanguage: (lng: string) => {
+          const l = lng.toLowerCase();
+          if (l.startsWith("de")) return "de-DE";
+          if (l.startsWith("en")) return "en-US";
+          if (l.startsWith("zh")) return "zh-CN";
+          return "en-US";
+        },
       },
-    },
-    react: { 
-      useSuspense: false,
-      bindI18n: 'languageChanged loaded',
-      bindI18nStore: 'added removed',
-    },
-  })
-  .then(() => {
-  const hasTranslator = (services: typeof i18n.services): boolean => {
-    if (!services) return false;
-    return 'translator' in services;
-  };
-  
-  (i18n as any).__translatorReady = hasTranslator(i18n.services);
-  (i18n as any).__servicesList = Object.keys(i18n.services || {});
-  initResolve(i18n);
-  })
-  .catch((error) => {
-    (i18n as any).__initError = String(error);
-    initReject(error);
-  });
+      react: { useSuspense: false },
+    })
+    .then(() => i18n)
+    .catch((e: unknown) => {
+      console.error("[i18n] init failed:", e);
+      g.__BONGO_I18N_READY__ = undefined;
+      throw e;
+    }));
 
 export default i18n;
