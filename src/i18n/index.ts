@@ -38,6 +38,13 @@ const resources = {
 
 const i18n: I18nType = i18next.createInstance();
 
+let initResolve: (value: I18nType) => void;
+let initReject: (reason?: unknown) => void;
+export const i18nReady = new Promise<I18nType>((resolve, reject) => {
+  initResolve = resolve;
+  initReject = reject;
+});
+
 export const i18nReady = i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -72,12 +79,13 @@ export const i18nReady = i18n
     },
   })
   .then(() => {
-    console.log('[i18n] Init successful', {
-      hasTranslator: !!i18n.services?.translator,
-      language: i18n.language,
-      services: Object.keys(i18n.services || {})
-    });
-    return i18n;
+    (i18n as any).__translatorReady = !!i18n.services?.translator;
+    (i18n as any).__servicesList = Object.keys(i18n.services || {});
+    initResolve(i18n);
+  })
+  .catch((error) => {
+    (i18n as any).__initError = String(error);
+    initReject(error);
   });
 
 export default i18n;
