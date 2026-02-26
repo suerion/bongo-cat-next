@@ -79,9 +79,14 @@ i18n
     },
   })
   .then(() => {
-    (i18n as any).__translatorReady = !!i18n.services?.translator;
-    (i18n as any).__servicesList = Object.keys(i18n.services || {});
-    initResolve(i18n);
+  const hasTranslator = (services: typeof i18n.services): boolean => {
+    if (!services) return false;
+    return 'translator' in services;
+  };
+  
+  (i18n as any).__translatorReady = hasTranslator(i18n.services);
+  (i18n as any).__servicesList = Object.keys(i18n.services || {});
+  initResolve(i18n);
   })
   .catch((error) => {
     (i18n as any).__initError = String(error);
