@@ -7,12 +7,23 @@ import i18n, { i18nReady } from "@/i18n";
 import { I18nDebug } from "@/components/I18nDebug";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(i18n.isInitialized);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    void i18nReady.finally(() => {
-      setReady(true);
-    });
+    let mounted = true;
+
+    void i18nReady
+      .then(() => {
+        if (mounted) setReady(true);
+      })
+      .catch((e: unknown) => {
+        console.error("[Providers] i18nReady failed:", e);
+        if (mounted) setReady(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   if (!ready) return null;
