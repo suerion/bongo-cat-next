@@ -147,6 +147,9 @@ export function I18nDebug() {
         `translator.language: ${trLng}`,
         `translator.options.keySeparator: ${trKeySep}`,
         `translator.options.nsSeparator: ${trNsSep}`,
+		`init translator ready: ${String((i18n as any).__translatorReady)}`,
+		`init services: ${(i18n as any).__servicesList?.join(', ') || 'none'}`,
+		`init error: ${(i18n as any).__initError || 'none'}`,
       ].join("\n")}
     </div>
   );
