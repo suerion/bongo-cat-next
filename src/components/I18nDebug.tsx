@@ -11,7 +11,7 @@ function getTranslatorInfo(i18nInstance: unknown) {
     return { trLng: "n/a", trKeySep: "n/a", trNsSep: "n/a" };
   }
 
-  const s = services as { translator?: unknown };
+  const s = services as unknown as { translator?: unknown };
   const translator = s.translator;
   if (!translator || typeof translator !== "object") {
     return { trLng: "n/a", trKeySep: "n/a", trNsSep: "n/a" };
@@ -107,12 +107,12 @@ export function I18nDebug() {
 
   const internal = getInternalDebug(i18n);
 
-  const hasTranslator = !!(i18n.services && (i18n.services as Record<string, unknown>)["translator"]);
+  const hasTranslator = !!(i18n.services && (i18n.services as unknown as Record<string, unknown>)["translator"]);
 
   const isInitialized = i18n.isInitialized;
 
   const storeData = (() => {
-    const services = i18n.services as Record<string, unknown> | undefined;
+    const services = i18n.services as unknown as Record<string, unknown> | undefined;
     const store = services?.["resourceStore"] as Record<string, unknown> | undefined;
     const data = store?.["data"] as Record<string, unknown> | undefined;
     return data ? Object.keys(data) : [];
