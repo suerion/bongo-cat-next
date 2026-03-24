@@ -72,6 +72,6 @@ export const i18nReady: Promise<I18nType> =
     .catch((e: unknown) => {
       console.error("[i18n] init failed:", e);
       throw e;
-    }));
+    });
 
 export default i18n;
