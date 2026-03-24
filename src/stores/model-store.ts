@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { resolveResource } from "@tauri-apps/api/path";
-import { join } from "@/utils/path";
+import { isTauriRuntime } from "@/utils/tauri";
 
 export type ModelMode = "standard" | "keyboard" | "handle";
 
@@ -66,18 +66,19 @@ export const useModelStore = create<ModelStoreState>()((set, get) => ({
         mode: "keyboard",
         isPreset: true,
         modelName: "cat.model3.json"
-      },
-      {
-        id: "naximofu_2",
-        name: "猫娘模式",
-        path: "assets/models/naximofu_2",
-        mode: "standard",
-        isPreset: true,
-        modelName: "naximofu_2.model3.json"
       }
     ];
 
-    const initialModels = presetModels.reduce<Record<string, Model>>((acc, model) => {
+    // Always resolve model directories from bundled resources to avoid
+    // platform-specific relative path behavior differences.
+    const resolvedModels = await Promise.all(
+      presetModels.map(async (model) => ({
+        ...model,
+        path: isTauriRuntime() ? await resolveResource(model.path) : model.path
+      }))
+    );
+
+    const initialModels = resolvedModels.reduce<Record<string, Model>>((acc, model) => {
       acc[model.id] = model;
       return acc;
     }, {});

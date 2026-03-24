@@ -4,7 +4,7 @@ import type { TrayIconOptions } from "@tauri-apps/api/tray";
 import { getName, getVersion } from "@tauri-apps/api/app";
 import { resolveResource } from "@tauri-apps/api/path";
 import { TrayIcon } from "@tauri-apps/api/tray";
-import { message } from "antd";
+import { toast } from "sonner";
 import { _useMenuFactory } from "@/hooks/menu/_use-menu-factory";
 import { useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -53,9 +53,11 @@ export function useTray() {
       const tray = await TrayIcon.new(options);
       trayRef.current = tray;
       return tray;
+
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      message.error(`Failed to create system tray: ${errorMessage}`);
+      toast.error(`Failed to create system tray: ${String(error)}`);
+
     }
   };
 
@@ -66,7 +68,7 @@ export function useTray() {
       await tray.setMenu(menu);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      message.error(`Failed to update tray menu: ${errorMessage}`);
+      toast.error(`Failed to update tray menu: ${String(error)}`);
     }
   };
 

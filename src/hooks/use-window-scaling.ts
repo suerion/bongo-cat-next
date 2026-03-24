@@ -7,7 +7,7 @@ import { useCatStore } from "@/stores/cat-store";
 import { useModelStore } from "@/stores/model-store";
 import { getImageSize } from "@/hooks/live2d/utils";
 import type { Live2DInstance } from "@/types";
-import { message } from "antd";
+import { toast } from "sonner";
 
 /**
  * 统一的窗口缩放和模型管理Hook
@@ -38,13 +38,7 @@ export function useWindowScaling(
       // 基于背景图计算基础缩放比例
       const scaleX = innerWidth / width;
       const scaleY = innerHeight / height;
-      let optimalScale = Math.min(scaleX, scaleY);
-
-      // 特殊处理：naximofu_2 模型需要额外缩放
-      if (width === 612 && height === 612) {
-        const naximofuBaseFactor = 612 / 13500;
-        optimalScale = (naximofuBaseFactor * scale) / 100;
-      }
+      const optimalScale = Math.min(scaleX, scaleY);
 
       live2d.model.scale.set(optimalScale);
       live2d.model.x = innerWidth / 2;
@@ -74,7 +68,7 @@ export function useWindowScaling(
           void initializeModelPosition();
         }, 100);
       } catch (error) {
-        message.error(`Scale change failed: ${String(error)}`);
+        toast.error(`Scale change failed: ${String(error)}`);
       }
     };
 
@@ -110,13 +104,7 @@ export function useWindowScaling(
       const { width, height } = await getImageSize(backgroundImage);
       const scaleX = innerWidth / width;
       const scaleY = innerHeight / height;
-      let optimalScale = Math.min(scaleX, scaleY);
-
-      // 特殊处理：naximofu_2 模型需要额外缩放
-      if (width === 612 && height === 612) {
-        const naximofuBaseFactor = 612 / 13500;
-        optimalScale = (naximofuBaseFactor * scale) / 100;
-      }
+      const optimalScale = Math.min(scaleX, scaleY);
 
       live2d.model.scale.set(optimalScale);
       live2d.model.x = innerWidth / 2;
@@ -140,13 +128,7 @@ export function useWindowScaling(
             const newHeight = window.innerHeight;
             const newScaleX = newWidth / width;
             const newScaleY = newHeight / height;
-            let newOptimalScale = Math.min(newScaleX, newScaleY);
-
-            // 特殊处理：naximofu_2 模型需要额外缩放
-            if (width === 612 && height === 612) {
-              const naximofuBaseFactor = 612 / 13500;
-              newOptimalScale = (naximofuBaseFactor * scale) / 100;
-            }
+            const newOptimalScale = Math.min(newScaleX, newScaleY);
             newLive2d.model.scale.set(newOptimalScale);
             newLive2d.model.x = newWidth / 2;
             newLive2d.model.y = newHeight / 2;
@@ -164,14 +146,14 @@ export function useWindowScaling(
               setScale(newScale);
             }
           } catch (error) {
-            message.error(`Scale sync failed: ${String(error)}`);
+            toast.error(`Scale sync failed: ${String(error)}`);
           } finally {
             isResizingRef.current = false;
           }
         })();
       }, 200);
     } catch (error) {
-      message.error(`Window resize failed: ${String(error)}`);
+      toast.error(`Window resize failed: ${String(error)}`);
       isResizingRef.current = false;
     }
   }, [backgroundImage, scale, setScale, live2dInstance]);
