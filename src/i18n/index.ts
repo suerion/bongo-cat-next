@@ -36,7 +36,7 @@ const resources = {
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-const i18n: I18nType = i18next.createInstance();
+const i18n: I18nType = i18next;
 
 export const i18nReady: Promise<I18nType> = 
   i18n
