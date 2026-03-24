@@ -97,7 +97,7 @@ export function _useMenuFactory() {
         enabled: false
       })
     ];
-  }, []);
+  }, [t]);
 
   // 🎯 创建应用控制菜单项
   const createAppControlMenuItems = useCallback(async () => {

@@ -1,8 +1,7 @@
-"use client";
-
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "@/styles/globals.css";
+import Providers from "./providers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { Toaster } from "@/components/ui/sonner";
