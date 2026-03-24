@@ -107,6 +107,22 @@ export function I18nDebug() {
 
   const internal = getInternalDebug(i18n);
 
+  const hasTranslator = !!(i18n.services && (i18n.services as Record<string, unknown>)["translator"]);
+
+  const isInitialized = i18n.isInitialized;
+
+  const storeData = (() => {
+    const services = i18n.services as Record<string, unknown> | undefined;
+    const store = services?.["resourceStore"] as Record<string, unknown> | undefined;
+    const data = store?.["data"] as Record<string, unknown> | undefined;
+    return data ? Object.keys(data) : [];
+  })();
+
+  const directFixedT1 = i18n.t("menu:scale.title");
+  const directFixedT2 = i18n.t("system:hideCat");
+  const directFixedT3 = i18n.t("menu:scale.title", { lng: "de-DE" });
+  const directFixedT4 = i18n.t("system:hideCat", { lng: "de-DE" });
+
   return (
     <div
       style={{
@@ -165,6 +181,15 @@ export function I18nDebug() {
         `init translator ready: ${String(internal.trReady)}`,
         `init services: ${internal.svcList?.join(", ") ?? "none"}`,
         `init error: ${internal.initErr ?? "none"}`,
+		"",
+		`isInitialized: ${String(isInitialized)}`,
+		`hasTranslator: ${String(hasTranslator)}`,
+		`resourceStore languages: ${JSON.stringify(storeData)}`,
+		"",
+		`direct t(menu:scale.title): ${directFixedT1}`,
+		`direct t(system:hideCat): ${directFixedT2}`,
+		`direct t(menu:scale.title, lng=de-DE): ${directFixedT3}`,
+		`direct t(system:hideCat, lng=de-DE): ${directFixedT4}`,
       ].join("\n")}
     </div>
   );
