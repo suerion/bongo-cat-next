@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback } from "react";
 import { Menu, MenuItem, PredefinedMenuItem } from "@tauri-apps/api/menu";
 import { useTranslation } from "react-i18next";
