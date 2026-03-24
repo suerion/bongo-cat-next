@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useRef } from "react";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { message } from "antd";
 import { toast } from "sonner";
 import { useCatStore } from "@/stores/cat-store";
 
@@ -33,7 +32,7 @@ export function useWindowEffects() {
     await window.setIgnoreCursorEvents(penetrable);
     await window.setAlwaysOnTop(alwaysOnTop);
   } catch (error) {
-    message.error(`Failed to reapply window flags: ${String(error)}`);
+    toast.error(`Failed to reapply window flags: ${String(error)}`);
   }
 }, [getWindow, penetrable, alwaysOnTop]);
 
@@ -48,7 +47,7 @@ export function useWindowEffects() {
   			if (event.payload) void reapplyWindowFlags();
 		});
     } catch (error) {
-      message.error(`Failed to listen focus changes: ${String(error)}`);
+      toast.error(`Failed to listen focus changes: ${String(error)}`);
     }
   };
 
