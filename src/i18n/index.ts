@@ -36,17 +36,10 @@ const resources = {
   "de-DE": { menu: deDEMenu, window: deDEWindow, models: deDEModels, system: deDESystem, motions: deDEMotions, expressions: deDEExpressions, ui: deDEUI },
 } as const;
 
-const g = globalThis as unknown as {
-  __BONGO_I18N__?: I18nType;
-  __BONGO_I18N_READY__?: Promise<I18nType>;
-};
+const i18n: I18nType = i18next.createInstance();
 
-const i18n: I18nType = g.__BONGO_I18N__ ?? i18next.createInstance();
-g.__BONGO_I18N__ = i18n;
-
-export const i18nReady: Promise<I18nType> =
-  g.__BONGO_I18N_READY__ ??
-  (g.__BONGO_I18N_READY__ = i18n
+export const i18nReady: Promise<I18nType> = 
+  i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
@@ -78,7 +71,6 @@ export const i18nReady: Promise<I18nType> =
     .then(() => i18n)
     .catch((e: unknown) => {
       console.error("[i18n] init failed:", e);
-      g.__BONGO_I18N_READY__ = undefined;
       throw e;
     }));
 
