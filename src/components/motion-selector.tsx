@@ -1,3 +1,5 @@
+"use client";
+
 import { useCatStore } from "@/stores/cat-store";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useI18n } from "@/hooks/use-i18n";
