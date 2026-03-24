@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { I18nextProvider } from "react-i18next";
 import i18n, { i18nReady } from "@/i18n";
-import { I18nDebug } from "@/components/I18nDebug";
+
+const I18nDebug = dynamic(
+  () => import("@/components/I18nDebug").then((mod) => mod.I18nDebug),
+  { ssr: false }
+);
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
