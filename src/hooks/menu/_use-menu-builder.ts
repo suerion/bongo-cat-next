@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback } from "react";
 import { CheckMenuItem, Submenu } from "@tauri-apps/api/menu";
 import { useI18n } from "@/hooks/use-i18n";
