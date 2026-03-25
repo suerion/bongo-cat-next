@@ -2,7 +2,6 @@
 
 import i18next, { type i18n as I18nType } from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 import zhCNMenu from "@/locales/zh-CN/menu.json";
 import zhCNWindow from "@/locales/zh-CN/window.json";
@@ -60,39 +59,21 @@ const resources = {
   },
 } as const;
 
-const i18n: I18nType = i18next;
+const i18n: I18nType = i18next.createInstance();
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    ns: [...namespaces],
-    defaultNS: "menu",
-    keySeparator: ".",
-    nsSeparator: ":",
-    supportedLngs: ["zh-CN", "en-US", "de-DE"],
-    fallbackLng: "en-US",
-    nonExplicitSupportedLngs: true,
-    initImmediate: true,
-    debug: false,
-    interpolation: { escapeValue: false },
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "bongo-cat-language",
-      convertDetectedLanguage: (lng: string) => {
-        const l = lng.toLowerCase();
-        if (l.startsWith("de")) return "de-DE";
-        if (l.startsWith("en")) return "en-US";
-        if (l.startsWith("zh")) return "zh-CN";
-        return "en-US";
-      },
-    },
-    react: { useSuspense: false },
-  })
-  .catch((e: unknown) => {
-    console.error("[i18n] init failed:", e);
-  });
+i18n.use(initReactI18next).init({
+  resources,
+  lng: "de-DE",
+  fallbackLng: "en-US",
+  supportedLngs: ["zh-CN", "en-US", "de-DE"],
+  nonExplicitSupportedLngs: true,
+  ns: [...namespaces],
+  defaultNS: "menu",
+  keySeparator: ".",
+  nsSeparator: ":",
+  interpolation: { escapeValue: false },
+  react: { useSuspense: false },
+  debug: false,
+});
 
 export default i18n;
