@@ -59,7 +59,7 @@ const resources = {
   },
 } as const;
 
-const i18n: I18nType = i18next;
+const i18n: I18nType = i18next.createInstance();
 
 i18n
   .use(initReactI18next)
