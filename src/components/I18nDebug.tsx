@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
+import appI18n from "@/i18n";
 
 function getTranslatorInfo(i18nInstance: unknown) {
   const i = i18nInstance as { services?: unknown };
@@ -124,6 +125,17 @@ export function I18nDebug() {
   const directFixedT3 = i18n.t("menu:scale.title", { lng: "de-DE" });
   const directFixedT4 = i18n.t("system:hideCat", { lng: "de-DE" });
 
+  const sameInstance = i18n === appI18n;
+
+  const fixedMenu = i18n.getFixedT(lng, "menu")("scale.title");
+  const fixedSystem = i18n.getFixedT(lng, "system")("hideCat");
+
+  const fixedMenuDe = i18n.getFixedT("de-DE", "menu")("scale.title");
+  const fixedSystemDe = i18n.getFixedT("de-DE", "system")("hideCat");
+
+  const defaultNS = JSON.stringify(i18n.options.defaultNS);
+  const nsList = JSON.stringify(i18n.options.ns);
+	
   return (
     <div
       style={{
@@ -191,6 +203,14 @@ export function I18nDebug() {
         `direct t(system:hideCat): ${directFixedT2}`,
         `direct t(menu:scale.title, lng=de-DE): ${directFixedT3}`,
         `direct t(system:hideCat, lng=de-DE): ${directFixedT4}`,
+        "",
+        `sameInstance: ${String(sameInstance)}`,
+        `defaultNS: ${defaultNS}`,
+        `ns: ${nsList}`,
+        `getFixedT(menu): ${fixedMenu}`,
+        `getFixedT(system): ${fixedSystem}`,
+        `getFixedT(menu,de-DE): ${fixedMenuDe}`,
+        `getFixedT(system,de-DE): ${fixedSystemDe}`,
       ].join("\n")}
     </div>
   );
