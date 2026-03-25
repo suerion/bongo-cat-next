@@ -61,19 +61,24 @@ const resources = {
 
 const i18n: I18nType = i18next.createInstance();
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: "de-DE",
-  fallbackLng: "en-US",
-  supportedLngs: ["zh-CN", "en-US", "de-DE"],
-  nonExplicitSupportedLngs: true,
-  ns: [...namespaces],
-  defaultNS: "menu",
-  keySeparator: ".",
-  nsSeparator: ":",
-  interpolation: { escapeValue: false },
-  react: { useSuspense: false },
-  debug: false,
-});
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: "de-DE",
+    fallbackLng: "en-US",
+    supportedLngs: ["zh-CN", "en-US", "de-DE"],
+    nonExplicitSupportedLngs: true,
+    ns: [...namespaces],
+    defaultNS: "menu",
+    keySeparator: ".",
+    nsSeparator: ":",
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+    debug: false,
+  })
+  .catch((e: unknown) => {
+    console.error("[i18n] init failed:", e);
+  });
 
 export default i18n;
