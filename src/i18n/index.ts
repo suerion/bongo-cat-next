@@ -74,7 +74,7 @@ i18n
     supportedLngs: ["zh-CN", "en-US", "de-DE"],
     fallbackLng: "en-US",
     nonExplicitSupportedLngs: true,
-    initImmediate: false,
+    initImmediate: true,
     debug: false,
     interpolation: { escapeValue: false },
     detection: {
