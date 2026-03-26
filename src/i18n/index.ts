@@ -62,7 +62,6 @@ const resources = {
 const i18n: I18nType = i18next.createInstance();
 
 i18n
-  .use(initReactI18next)
   .init({
     resources,
     lng: "de-DE",
