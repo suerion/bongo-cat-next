@@ -1,5 +1,5 @@
 "use client";
-
+import { runMinimalI18nTest } from "./minimal-test";
 import i18next, { type i18n as I18nType } from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -74,7 +74,8 @@ i18n
     react: { useSuspense: false },
     debug: false,
   })
-.then(() => {
+.then(async () => {
+	await runMinimalI18nTest()
   const services = i18n.services as unknown as Record<string, unknown> | undefined;
   const store = services?.["resourceStore"] as Record<string, unknown> | undefined;
   const data = store?.["data"] as Record<string, unknown> | undefined;
