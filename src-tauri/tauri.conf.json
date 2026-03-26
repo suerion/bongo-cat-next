@@ -21,7 +21,7 @@
         "transparent": true,
         "decorations": false,
         "acceptFirstMouse": true,
-        "skipTaskbar": true
+        "skipTaskbar": true,
 		"devtools": true
       }
     ],
