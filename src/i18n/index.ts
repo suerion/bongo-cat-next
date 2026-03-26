@@ -1,7 +1,7 @@
 "use client";
 import { runMinimalI18nTest } from "./minimal-test";
 import i18next, { type i18n as I18nType } from "i18next";
-import { initReactI18next } from "react-i18next";
+//import { initReactI18next } from "react-i18next";
 
 import zhCNMenu from "@/locales/zh-CN/menu.json";
 import zhCNWindow from "@/locales/zh-CN/window.json";
@@ -29,6 +29,41 @@ import deDEUI from "@/locales/de-DE/ui.json";
 
 const namespaces = ["menu", "window", "models", "system", "motions", "expressions", "ui"] as const;
 
+function toPlainObject<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+const resources = {
+  "zh-CN": {
+    menu: toPlainObject(zhCNMenu),
+    window: toPlainObject(zhCNWindow),
+    models: toPlainObject(zhCNModels),
+    system: toPlainObject(zhCNSystem),
+    motions: toPlainObject(zhCNMotions),
+    expressions: toPlainObject(zhCNExpressions),
+    ui: toPlainObject(zhCNUI),
+  },
+  "en-US": {
+    menu: toPlainObject(enUSMenu),
+    window: toPlainObject(enUSWindow),
+    models: toPlainObject(enUSModels),
+    system: toPlainObject(enUSSystem),
+    motions: toPlainObject(enUSMotions),
+    expressions: toPlainObject(enUSExpressions),
+    ui: toPlainObject(enUSUI),
+  },
+  "de-DE": {
+    menu: toPlainObject(deDEMenu),
+    window: toPlainObject(deDEWindow),
+    models: toPlainObject(deDEModels),
+    system: toPlainObject(deDESystem),
+    motions: toPlainObject(deDEMotions),
+    expressions: toPlainObject(deDEExpressions),
+    ui: toPlainObject(deDEUI),
+  },
+} as const;
+
+/*
 const resources = {
   "zh-CN": {
     menu: zhCNMenu,
@@ -58,6 +93,7 @@ const resources = {
     ui: deDEUI,
   },
 } as const;
+*/
 
 const i18n: I18nType = i18next.createInstance();
 
@@ -71,9 +107,9 @@ i18n
     ns: [...namespaces],
     defaultNS: "menu",
     interpolation: { escapeValue: false },
-    react: { useSuspense: false },
     debug: false,
   })
+	
 .then(async () => {
 	await runMinimalI18nTest()
   const services = i18n.services as unknown as Record<string, unknown> | undefined;
