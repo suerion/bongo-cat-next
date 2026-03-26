@@ -29,6 +29,25 @@ pub fn start_listening(app_handle: AppHandle) {
     IS_RUNNING.store(true, Ordering::SeqCst);
 
     let callback = move |event: Event| {
+        match &event.event_type {
+            EventType::ButtonPress(button) => {
+                println!("[device] MousePress {:?}", button);
+            }
+            EventType::ButtonRelease(button) => {
+                println!("[device] MouseRelease {:?}", button);
+            }
+            EventType::MouseMove { x, y } => {
+                println!("[device] MouseMove x={x} y={y}");
+            }
+            EventType::KeyPress(key) => {
+                println!("[device] KeyPress {:?}", key);
+            }
+            EventType::KeyRelease(key) => {
+                println!("[device] KeyRelease {:?}", key);
+            }
+            _ => return,
+        }
+
         let device = match event.event_type {
             EventType::ButtonPress(button) => DeviceEvent {
                 kind: DeviceKind::MousePress,
