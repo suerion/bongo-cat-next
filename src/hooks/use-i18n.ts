@@ -14,7 +14,7 @@ export function useLanguage() {
     async (lng: string) => {
       await i18n.changeLanguage(lng);
     },
-    [i18n]
+    [i18n.language]
   );
 
   const isLanguage = useCallback(
@@ -51,13 +51,10 @@ export function useLanguage() {
  * 预设命名空间的快捷方法
  */
 export function useI18n(namespaces?: string | string[]) {
-  const { t, i18n } = useTranslation(namespaces);
-
-  const changeLanguage = useCallback(async (lng: string) => {
-    await i18n.changeLanguage(lng);
-  }, [i18n]);
-
-  const isLanguage = useCallback((lng: string) => i18n.language === lng, [i18n]);
-
-  return { t, i18n, changeLanguage, isLanguage, currentLanguage: i18n.language };
+  const { t } = useTranslation(namespaces);
+	const language = useLanguage();
+  return {
+    t,
+    ...language
+  };
 }
