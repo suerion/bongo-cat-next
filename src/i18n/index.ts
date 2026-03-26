@@ -36,7 +36,7 @@ const resources = {
     system: zhCNSystem,
     motions: zhCNMotions,
     expressions: zhCNExpressions,
-    ui: zhCNUI,
+    ui: zhCNUI
   },
   "en-US": {
     menu: enUSMenu,
@@ -45,7 +45,7 @@ const resources = {
     system: enUSSystem,
     motions: enUSMotions,
     expressions: enUSExpressions,
-    ui: enUSUI,
+    ui: enUSUI
   },
   "de-DE": {
     menu: deDEMenu,
@@ -54,7 +54,7 @@ const resources = {
     system: deDESystem,
     motions: deDEMotions,
     expressions: deDEExpressions,
-    ui: deDEUI,
+    ui: deDEUI
   },
 };
 
@@ -72,8 +72,8 @@ void i18n
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
-      lookupLocalStorage: "bongo-cat-language",
-    },
+      lookupLocalStorage: "bongo-cat-language"
+    }
   });
 
 export default i18n;
