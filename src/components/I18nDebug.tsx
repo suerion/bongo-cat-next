@@ -135,6 +135,8 @@ export function I18nDebug() {
 
   const defaultNS = JSON.stringify(i18n.options.defaultNS);
   const nsList = JSON.stringify(i18n.options.ns);
+
+  const rawTest = i18n.t("menu:scale.title", { lng: "de-DE" });
 	
   return (
     <div
@@ -211,6 +213,8 @@ export function I18nDebug() {
         `getFixedT(system): ${fixedSystem}`,
         `getFixedT(menu,de-DE): ${fixedMenuDe}`,
         `getFixedT(system,de-DE): ${fixedSystemDe}`,
+        "",
+		`raw t(menu:scale.title): ${rawTest}`,
       ].join("\n")}
     </div>
   );
