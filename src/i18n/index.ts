@@ -4,7 +4,6 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-// 静态导入中文资源
 import zhCNMenu from "@/locales/zh-CN/menu.json";
 import zhCNWindow from "@/locales/zh-CN/window.json";
 import zhCNModels from "@/locales/zh-CN/models.json";
@@ -13,7 +12,6 @@ import zhCNMotions from "@/locales/zh-CN/motions.json";
 import zhCNExpressions from "@/locales/zh-CN/expressions.json";
 import zhCNUI from "@/locales/zh-CN/ui.json";
 
-// 静态导入英文资源
 import enUSMenu from "@/locales/en-US/menu.json";
 import enUSWindow from "@/locales/en-US/window.json";
 import enUSModels from "@/locales/en-US/models.json";
@@ -21,6 +19,14 @@ import enUSSystem from "@/locales/en-US/system.json";
 import enUSMotions from "@/locales/en-US/motions.json";
 import enUSExpressions from "@/locales/en-US/expressions.json";
 import enUSUI from "@/locales/en-US/ui.json";
+
+import deDEMenu from "@/locales/de-DE/menu.json";
+import deDEWindow from "@/locales/de-DE/window.json";
+import deDEModels from "@/locales/de-DE/models.json";
+import deDESystem from "@/locales/de-DE/system.json";
+import deDEMotions from "@/locales/de-DE/motions.json";
+import deDEExpressions from "@/locales/de-DE/expressions.json";
+import deDEUI from "@/locales/de-DE/ui.json";
 
 const resources = {
   "zh-CN": {
@@ -40,20 +46,28 @@ const resources = {
     motions: enUSMotions,
     expressions: enUSExpressions,
     ui: enUSUI
+  },
+  "de-DE": {
+    menu: deDEMenu,
+    window: deDEWindow,
+    models: deDEModels,
+    system: deDESystem,
+    motions: deDEMotions,
+    expressions: deDEExpressions,
+    ui: deDEUI
   }
 };
 
-// 标准 react-i18next 配置
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    lng: "zh-CN", // 默认中文
+    lng: "zh-CN",
     fallbackLng: "zh-CN",
     debug: false,
     interpolation: {
-      escapeValue: false // React 已经进行了 XSS 防护
+      escapeValue: false
     },
     detection: {
       order: ["localStorage", "navigator"],

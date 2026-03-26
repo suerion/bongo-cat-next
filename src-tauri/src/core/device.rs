@@ -1,10 +1,11 @@
 use rdev::{Event, EventType, listen};
 use serde::Serialize;
 use serde_json::{Value, json};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use tauri::{AppHandle, Emitter};
 
 static IS_RUNNING: AtomicBool = AtomicBool::new(false);
+static EVENT_COUNTER: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Debug, Clone, Serialize)]
 pub enum DeviceKind {
@@ -52,6 +53,11 @@ pub fn start_listening(app_handle: AppHandle) {
             },
             _ => return,
         };
+
+        let count = EVENT_COUNTER.fetch_add(1, Ordering::Relaxed) + 1;
+        if count % 200 == 0 {
+            println!("[device] still receiving input events, count={count}");
+        }
 
         if let Err(e) = app_handle.emit("device-changed", device) {
             eprintln!("Failed to emit event: {:?}", e);

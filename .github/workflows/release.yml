@@ -96,12 +96,16 @@ jobs:
       - name: Generate Tauri icons
         run: pnpm tauri:icon
 
+      - name: i18n smoke test
+        run: node scripts/i18n-smoke.mjs
+
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
         env:
           CI: false
           PLATFORM: ${{ matrix.platform }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_PUBLIC_I18N_DEBUG: "1"
         with:
           tagName: ${{ needs.create-release.outputs.tag }}
           releaseName: 'BongoCat Next ${{ needs.create-release.outputs.tag }}'
