@@ -14,14 +14,14 @@ export function useLanguage() {
     async (lng: string) => {
       await i18n.changeLanguage(lng);
     },
-    [i18n.language]
+    [i18n]
   );
 
   const isLanguage = useCallback(
     (lng: string) => {
       return i18n.language === lng;
     },
-    [i18n]
+    [i18n.language]
   );
 
   // 预定义的语言切换函数，使用useCallback确保稳定
