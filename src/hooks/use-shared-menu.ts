@@ -1,3 +1,5 @@
+"use client";
+
 import { _useMenuFactory } from "@/hooks/menu/_use-menu-factory";
 
 export function useSharedMenu() {

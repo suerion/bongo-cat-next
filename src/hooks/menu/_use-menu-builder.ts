@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback } from "react";
 import { CheckMenuItem, Submenu } from "@tauri-apps/api/menu";
 import { useI18n } from "@/hooks/use-i18n";
@@ -14,7 +16,7 @@ import { useModelStore } from "@/stores/model-store";
  */
 export function _useMenuBuilder() {
   // 使用统一的 useI18n Hook
-  const { t, changeLanguage, isLanguage } = useI18n(["menu", "window", "models", "system"]);
+  const { t, changeLanguage, isLanguage, currentLanguage} = useI18n(["menu", "window", "models", "system"]);
 
   const {
     scale,
@@ -89,7 +91,7 @@ export function _useMenuBuilder() {
     }
 
     return items;
-  }, [opacity, setOpacity]);
+  }, [opacity, setOpacity, t]);
 
   // 🎯 创建模型模式选项子菜单
   const getModeMenuItems = useCallback(async () => {
@@ -190,6 +192,13 @@ export function _useMenuBuilder() {
         action: () => {
           void changeLanguage("en-US");
         }
+      }),
+			CheckMenuItem.new({
+        text: t("language.german", { ns: "system" }),
+        checked: isLanguage("de-DE"),
+        action: () => {
+          void changeLanguage("de-DE");
+        }
       })
     ]);
 
@@ -223,7 +232,8 @@ export function _useMenuBuilder() {
       alwaysOnTop,
       mirrorMode,
       selectorsVisible,
-      currentModel
+      currentModel,
+      currentLanguage
     }
   };
 }
