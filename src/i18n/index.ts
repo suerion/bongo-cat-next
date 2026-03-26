@@ -75,32 +75,45 @@ i18n
     react: { useSuspense: false },
     debug: false,
   })
-  .then(() => {
-    const services = i18n.services as unknown as Record<string, unknown> | undefined;
-    const store = services?.["resourceStore"] as Record<string, unknown> | undefined;
-    const data = store?.["data"] as Record<string, unknown> | undefined;
+.then(() => {
+  const services = i18n.services as unknown as Record<string, unknown> | undefined;
+  const store = services?.["resourceStore"] as Record<string, unknown> | undefined;
+  const data = store?.["data"] as Record<string, unknown> | undefined;
 
-    console.log("[i18n init ok]", {
-      language: i18n.language,
-      resolvedLanguage: i18n.resolvedLanguage,
-      languages: i18n.languages,
-      isInitialized: i18n.isInitialized,
-      defaultNS: i18n.options.defaultNS,
-      ns: i18n.options.ns,
-      keySeparator: i18n.options.keySeparator,
-      nsSeparator: i18n.options.nsSeparator,
-      hasMenuBundle: i18n.hasResourceBundle("de-DE", "menu"),
-      hasSystemBundle: i18n.hasResourceBundle("de-DE", "system"),
-      rawMenu: i18n.t("menu:scale.title", { lng: "de-DE" }),
-      rawSystem: i18n.t("system:hideCat", { lng: "de-DE" }),
-      fixedMenu: i18n.getFixedT("de-DE", "menu")("scale.title"),
-      fixedSystem: i18n.getFixedT("de-DE", "system")("hideCat"),
-      getMenu: i18n.getResource("de-DE", "menu", "scale.title"),
-      getSystem: i18n.getResource("de-DE", "system", "hideCat"),
-      storeLanguages: data ? Object.keys(data) : [],
-      serviceKeys: services ? Object.keys(services) : [],
-    });
-  })
+  const defaultNS = i18n.options.defaultNS as unknown;
+  const ns = i18n.options.ns as unknown;
+  const keySeparator = i18n.options.keySeparator as unknown;
+  const nsSeparator = i18n.options.nsSeparator as unknown;
+
+  const rawMenu = i18n.t("menu:scale.title", { lng: "de-DE" });
+  const rawSystem = i18n.t("system:hideCat", { lng: "de-DE" });
+  const fixedMenu = i18n.getFixedT("de-DE", "menu")("scale.title");
+  const fixedSystem = i18n.getFixedT("de-DE", "system")("hideCat");
+
+  const getMenu = i18n.getResource("de-DE", "menu", "scale.title") as unknown;
+  const getSystem = i18n.getResource("de-DE", "system", "hideCat") as unknown;
+
+  console.log("[i18n init ok]", {
+    language: i18n.language,
+    resolvedLanguage: i18n.resolvedLanguage,
+    languages: i18n.languages,
+    isInitialized: i18n.isInitialized,
+    defaultNS: JSON.stringify(defaultNS),
+    ns: JSON.stringify(ns),
+    keySeparator: String(keySeparator),
+    nsSeparator: String(nsSeparator),
+    hasMenuBundle: i18n.hasResourceBundle("de-DE", "menu"),
+    hasSystemBundle: i18n.hasResourceBundle("de-DE", "system"),
+    rawMenu,
+    rawSystem,
+    fixedMenu,
+    fixedSystem,
+    getMenu: String(getMenu),
+    getSystem: String(getSystem),
+    storeLanguages: data ? Object.keys(data) : [],
+    serviceKeys: services ? Object.keys(services) : [],
+  });
+})
   .catch((e: unknown) => {
     console.error("[i18n] init failed:", e);
   });
