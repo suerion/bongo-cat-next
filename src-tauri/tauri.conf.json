@@ -22,7 +22,7 @@
         "decorations": false,
         "acceptFirstMouse": true,
         "skipTaskbar": true
-				"devtools": true
+		"devtools": true
       }
     ],
     "security": {
