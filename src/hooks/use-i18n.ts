@@ -52,7 +52,8 @@ export function useLanguage() {
  */
 export function useI18n(namespaces?: string | string[]) {
   const { t } = useTranslation(namespaces);
-	const language = useLanguage();
+  const language = useLanguage();
+	
   return {
     t,
     ...language
