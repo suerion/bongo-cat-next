@@ -71,8 +71,6 @@ i18n
     nonExplicitSupportedLngs: true,
     ns: [...namespaces],
     defaultNS: "menu",
-    keySeparator: ".",
-    nsSeparator: ":",
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
     debug: false,
