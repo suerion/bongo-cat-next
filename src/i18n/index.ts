@@ -55,7 +55,7 @@ const resources = {
     motions: deDEMotions,
     expressions: deDEExpressions,
     ui: deDEUI
-  },
+  }
 };
 
 void i18n
@@ -67,7 +67,7 @@ void i18n
     fallbackLng: "zh-CN",
     debug: false,
     interpolation: {
-      escapeValue: false,
+      escapeValue: false
     },
     detection: {
       order: ["localStorage", "navigator"],
