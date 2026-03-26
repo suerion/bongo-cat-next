@@ -6,32 +6,21 @@ import { resolveResource } from "@tauri-apps/api/path";
 import { TrayIcon } from "@tauri-apps/api/tray";
 import { toast } from "sonner";
 import { _useMenuFactory } from "@/hooks/menu/_use-menu-factory";
-import { useEffect, useRef, useCallback } from "react";
-import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
 
 const TRAY_ID = "BONGO_CAT_TRAY";
 
-function hasTranslator(i18nInstance: unknown): boolean {
-  const i = i18nInstance as { services?: unknown };
-  const services = i.services;
-  if (!services || typeof services !== "object") return false;
-  return "translator" in (services as Record<string, unknown>);
-}
-
 export function useTray() {
-  const { i18n } = useTranslation();
   const { createMenu, menuStates } = _useMenuFactory();
   const trayRef = useRef<TrayIcon | null>(null);
 
-  const isTranslatorReady = useCallback(() => hasTranslator(i18n), [i18n]);
-
   const createTray = async () => {
     try {
-      if (!isTranslatorReady()) return;
-
+      // 检查是否已存在托盘
       const existingTray = await TrayIcon.getById(TRAY_ID);
       if (existingTray) {
         trayRef.current = existingTray;
+        // 更新现有托盘的菜单
         await updateTrayMenu(existingTray);
         return existingTray;
       }
@@ -47,60 +36,38 @@ export function useTray() {
         id: TRAY_ID,
         tooltip: `${appName} v${appVersion}`,
         iconAsTemplate: false,
-        menuOnLeftClick: true,
+        menuOnLeftClick: true
       };
 
       const tray = await TrayIcon.new(options);
       trayRef.current = tray;
       return tray;
-
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+    } catch (error) {
       toast.error(`Failed to create system tray: ${String(error)}`);
-
     }
   };
 
   const updateTrayMenu = async (tray: TrayIcon) => {
     try {
-      if (!isTranslatorReady()) return;
       const menu = await createMenu({ type: "tray" });
       await tray.setMenu(menu);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+    } catch (error) {
       toast.error(`Failed to update tray menu: ${String(error)}`);
     }
   };
 
+  // 🎯 监听所有状态变化，自动更新托盘菜单
   useEffect(() => {
-    const initTray = async () => {
-      if (!isTranslatorReady()) {
-        setTimeout(() => {
-          void initTray();
-        }, 100);
-        return;
-      }
-      if (!trayRef.current) {
-        await createTray();
+    const updateMenu = async () => {
+      if (trayRef.current) {
+        await updateTrayMenu(trayRef.current);
       }
     };
 
-    void initTray();
-  }, [isTranslatorReady]);
+    void updateMenu();
+  }, [menuStates]); // 依赖菜单状态
 
-  useEffect(() => {
-    const tray = trayRef.current;
-    if (!tray) return;
-    if (!isTranslatorReady()) return;
-
-    const updateMenuAsync = async () => {
-      await updateTrayMenu(tray);
-    };
-
-    updateMenuAsync().catch((error: unknown) => {
-      console.error("[useTray] Failed to update menu:", error);
-    });
-  }, [menuStates, i18n.language, isTranslatorReady]);
-
-  return { createTray };
+  return {
+    createTray
+  };
 }
